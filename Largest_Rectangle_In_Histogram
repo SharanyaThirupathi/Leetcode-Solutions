@@ -1,0 +1,39 @@
+// Helper function to find the maximum of two integers
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int largestRectangleArea(int* heights, int heightsSize) {
+    // Create an array to act as our stack, storing indices
+    int* stack = (int*)malloc((heightsSize + 1) * sizeof(int));
+    int top = -1;
+    int max_area = 0;
+    int i = 0;
+
+    while (i < heightsSize) {
+        // If stack is empty or current bar is higher than or equal to the bar at stack top, push index
+        if (top == -1 || heights[i] >= heights[stack[top]]) {
+            stack[++top] = i;
+            i++;
+        } 
+        // If current bar is lower, pop the top and calculate area with the popped bar as the smallest height
+        else {
+            int popped_index = stack[top--];
+            // If stack becomes empty, width is 'i'. Otherwise, width is 'i - stack[top] - 1'
+            int width = (top == -1) ? i : (i - stack[top] - 1);
+            int current_area = heights[popped_index] * width;
+            max_area = max(max_area, current_area);
+        }
+    }
+
+    // Clear out any remaining elements left in the stack
+    while (top != -1) {
+        int popped_index = stack[top--];
+        int width = (top == -1) ? i : (i - stack[top] - 1);
+        int current_area = heights[popped_index] * width;
+        max_area = max(max_area, current_area);
+    }
+
+    free(stack);
+    return max_area;
+}
