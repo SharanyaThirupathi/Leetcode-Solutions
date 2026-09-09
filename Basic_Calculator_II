@@ -1,0 +1,49 @@
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+int calculate(char* s) {
+    int len = strlen(s);
+    if (len == 0) return 0;
+
+    // Use a dynamic stack to handle up to len elements
+    int* stack = (int*)malloc(len * sizeof(int));
+    int top = -1;
+
+    long currentNumber = 0;
+    char operation = '+';
+
+    for (int i = 0; i < len; i++) {
+        char currentChar = s[i];
+
+        // Form the multi-digit number
+        if (isdigit(currentChar)) {
+            currentNumber = (currentNumber * 10) + (currentChar - '0');
+        }
+
+        // Process the number when hitting an operator or the end of the string
+        if ((!isdigit(currentChar) && !isspace(currentChar)) || i == len - 1) {
+            if (operation == '+') {
+                stack[++top] = currentNumber;
+            } else if (operation == '-') {
+                stack[++top] = -currentNumber;
+            } else if (operation == '*') {
+                stack[top] = stack[top] * currentNumber;
+            } else if (operation == '/') {
+                stack[top] = stack[top] / currentNumber; // C implicitly truncates towards zero
+            }
+            
+            operation = currentChar;
+            currentNumber = 0;
+        }
+    }
+
+    // Accumulate the final sum from the stack
+    long result = 0;
+    for (int i = 0; i <= top; i++) {
+        result += stack[i];
+    }
+
+    free(stack);
+    return (int)result;
+}
