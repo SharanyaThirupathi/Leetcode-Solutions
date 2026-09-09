@@ -1,0 +1,55 @@
+#include <stdlib.h>
+
+typedef struct {
+    int* data;  // Array to store stack elements
+    int* min;   // Array to store minimum elements
+    int topIndex;
+    int capacity;
+} MinStack;
+
+// Helper function to find the minimum of two numbers
+int minVal(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+MinStack* minStackCreate() {
+    MinStack* obj = (MinStack*)malloc(sizeof(MinStack));
+    obj->capacity = 30005; // Sufficient size based on constraints
+    obj->data = (int*)malloc(obj->capacity * sizeof(int));
+    obj->min = (int*)malloc(obj->capacity * sizeof(int));
+    obj->topIndex = -1;
+    return obj;
+}
+
+void minStackPush(MinStack* obj, int value) {
+    obj->topIndex++;
+    obj->data[obj->topIndex] = value;
+    
+    // If it's the first element, it is the minimum
+    if (obj->topIndex == 0) {
+        obj->min[obj->topIndex] = value;
+    } else {
+        // Otherwise, store the minimum between current value and previous minimum
+        obj->min[obj->topIndex] = minVal(value, obj->min[obj->topIndex - 1]);
+    }
+}
+
+void minStackPop(MinStack* obj) {
+    if (obj->topIndex >= 0) {
+        obj->topIndex--;
+    }
+}
+
+int minStackTop(MinStack* obj) {
+    return obj->data[obj->topIndex];
+}
+
+int minStackGetMin(MinStack* obj) {
+    return obj->min[obj->topIndex];
+}
+
+void minStackFree(MinStack* obj) {
+    free(obj->data);
+    free(obj->min);
+    free(obj);
+}
