@@ -1,0 +1,47 @@
+import java.util.Stack;
+
+class MyQueue 
+{
+
+    private Stack input;
+    private Stack output;
+    
+    public MyQueue() 
+    {
+        input = new Stack();
+        output = new Stack();
+    }
+    
+   
+    public void push(int x) 
+    {
+        input.push(x); 
+    }
+    
+    public int peek() 
+    {
+        
+        if (output.isEmpty()) 
+        {
+          
+            while (!input.isEmpty()) 
+            {
+                output.push(input.pop());
+            }
+        }
+        
+        return (int) output.peek();
+    }
+    
+    public int pop() 
+    {
+        peek(); 
+        return (int) output.pop();
+    }
+    
+ 
+    public boolean empty() 
+    {
+        return input.isEmpty() && output.isEmpty();
+    }
+}
